@@ -113,3 +113,16 @@
     }
   }
 }
+
+/* Chat Input Container */
+.chat-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chat-input-container input {
+  flex: 1;
+}
+
+/* Message Styles */

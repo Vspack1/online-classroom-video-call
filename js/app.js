@@ -73,6 +73,7 @@ function setupSocketListeners() {
   socket.on('screen-share-stopped', handleScreenShareStopped);
   socket.on('room-info', handleRoomInfo);
   socket.on('host-changed', handleHostChanged);
+  socket.on('participant-count-updated', handleParticipantCountUpdated);
 }
 
 // Join room
@@ -134,6 +135,12 @@ function handleUserLeft(data) {
 // Handle room info
 function handleRoomInfo(data) {
   console.log('Room info received:', data);
+  
+  // Update participant count based on actual participants
+  const participantCount = document.getElementById('participant-count');
+  if (participantCount && data.participants) {
+    participantCount.textContent = data.participants.length.toString();
+  }
   
   // Add existing participants
   data.participants.forEach(participant => {
@@ -362,7 +369,18 @@ function handleScreenShareStopped(data) {
 // Send chat message
 function sendMessage() {
   const message = chatInput.value.trim();
-  if (message) {
+  if (message && socket) {
+    // Add message to local chat immediately
+    const localMessage = {
+      id: Date.now().toString(),
+      userId: socket.id,
+      username: currentUsername,
+      message: message,
+      timestamp: new Date().toISOString()
+    };
+    addChatMessage(localMessage);
+    
+    // Send to server
     socket.emit('send-message', { message });
     chatInput.value = '';
   }
@@ -370,11 +388,16 @@ function sendMessage() {
 
 // Handle new message
 function handleNewMessage(message) {
-  addChatMessage(message);
+  // Only add message if it's not from current user (to avoid duplicate)
+  if (message.userId !== socket.id) {
+    addChatMessage(message);
+  }
 }
 
 // Add chat message to UI
 function addChatMessage(message) {
+  if (!chatMessages) return;
+  
   const messageElement = document.createElement('div');
   messageElement.className = 'message';
   
@@ -532,4 +555,12 @@ window.VideoApp = {
   toggleVideo,
   toggleScreenShare,
   sendMessage
-}; 
+};
+
+// Handle participant count update
+function handleParticipantCountUpdated(data) {
+  const participantCount = document.getElementById('participant-count');
+  if (participantCount) {
+    participantCount.textContent = data.count.toString();
+  }
+} 

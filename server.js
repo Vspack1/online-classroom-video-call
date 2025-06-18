@@ -79,6 +79,11 @@ io.on('connection', (socket) => {
       screenSharer: room.screenSharer
     });
 
+    // Update participant count for all users in room
+    io.to(roomId).emit('participant-count-updated', {
+      count: room.participants.size
+    });
+
     console.log(`${username} joined room ${roomId}`);
   });
 
@@ -218,6 +223,11 @@ io.on('connection', (socket) => {
           socket.to(user.roomId).emit('user-left', {
             userId: socket.id,
             username: user.username
+          });
+          
+          // Update participant count for remaining users
+          io.to(user.roomId).emit('participant-count-updated', {
+            count: room.participants.size
           });
         }
       }
