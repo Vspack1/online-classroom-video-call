@@ -94,6 +94,14 @@ async function joinRoom(roomId, username, host = false) {
 function handleUserJoined(data) {
   console.log('User joined:', data);
   showNotification(`${data.username} joined the room`, 'info');
+  
+  // Update participant count
+  const participantCount = document.getElementById('participant-count');
+  if (participantCount) {
+    const currentCount = parseInt(participantCount.textContent) || 1;
+    participantCount.textContent = (currentCount + 1).toString();
+  }
+  
   updateParticipantsList();
 }
 
@@ -101,6 +109,13 @@ function handleUserJoined(data) {
 function handleUserLeft(data) {
   console.log('User left:', data);
   showNotification(`${data.username} left the room`, 'info');
+  
+  // Update participant count
+  const participantCount = document.getElementById('participant-count');
+  if (participantCount) {
+    const currentCount = parseInt(participantCount.textContent) || 1;
+    participantCount.textContent = Math.max(1, currentCount - 1).toString();
+  }
   
   // Remove video stream
   if (remoteStreams[data.userId]) {
@@ -406,9 +421,37 @@ function handleHostChanged(data) {
 
 // Update participants list
 function updateParticipantsList() {
-  // This would be implemented to show current participants
-  // For now, just log the update
-  console.log('Updating participants list');
+  if (participantsList) {
+    // Clear current list
+    participantsList.innerHTML = '';
+    
+    // Get current participants from server (this would be implemented with actual data)
+    // For now, we'll show a placeholder
+    const participantElement = document.createElement('div');
+    participantElement.className = 'flex items-center justify-between p-3 bg-gray-700 rounded-lg mb-2';
+    participantElement.innerHTML = `
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+          <i class="fas fa-user text-white text-sm"></i>
+        </div>
+        <div>
+          <p class="text-white font-medium">${currentUsername || 'You'}</p>
+          <p class="text-gray-400 text-xs">${isHost ? 'Host' : 'Participant'}</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-microphone text-green-400"></i>
+        <i class="fas fa-video text-green-400"></i>
+      </div>
+    `;
+    participantsList.appendChild(participantElement);
+    
+    // Update participant count in header
+    const participantCount = document.getElementById('participant-count');
+    if (participantCount) {
+      participantCount.textContent = '1'; // This should be updated with actual count
+    }
+  }
 }
 
 // Update room info
