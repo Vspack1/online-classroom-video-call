@@ -48,6 +48,9 @@ async function initApp() {
     // Socket event listeners
     setupSocketListeners();
 
+    // Setup chat input listeners
+    setupChatListeners();
+
     console.log('Application initialized successfully');
   } catch (error) {
     console.error('Error initializing app:', error);
@@ -74,6 +77,24 @@ function setupSocketListeners() {
   socket.on('room-info', handleRoomInfo);
   socket.on('host-changed', handleHostChanged);
   socket.on('participant-count-updated', handleParticipantCountUpdated);
+}
+
+// Setup chat input listeners
+function setupChatListeners() {
+  if (chatInput) {
+    // Send message on Enter key
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    // Enable typing in input
+    chatInput.addEventListener('input', (e) => {
+      // This ensures the input shows what user types
+      console.log('Typing:', e.target.value);
+    });
+  }
 }
 
 // Join room
@@ -536,15 +557,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (screenShareButton) screenShareButton.addEventListener('click', toggleScreenShare);
   if (leaveButton) leaveButton.addEventListener('click', leaveRoom);
   if (sendButton) sendButton.addEventListener('click', sendMessage);
-  
-  // Chat input enter key
-  if (chatInput) {
-    chatInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        sendMessage();
-      }
-    });
-  }
 });
 
 // Export functions for use in other files

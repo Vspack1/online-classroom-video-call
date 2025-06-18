@@ -14,6 +14,9 @@
   
   .message {
     @apply p-3 rounded-lg;
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+    animation: chat-in 0.45s cubic-bezier(.4,2,.6,1) forwards;
   }
   
   .own-message {
@@ -126,3 +129,61 @@
 }
 
 /* Message Styles */
+
+/* Hiệu ứng nút bấm */
+button, .control-btn {
+  transition: transform 0.15s cubic-bezier(.4,2,.6,1), box-shadow 0.2s;
+}
+button:hover, .control-btn:hover {
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: 0 4px 24px 0 rgba(0, 180, 255, 0.25), 0 1.5px 6px 0 rgba(0,0,0,0.08);
+}
+
+/* Hiệu ứng glow cho room info và participant count */
+#room-info, #participant-count {
+  animation: glow 2s infinite alternate;
+}
+@keyframes glow {
+  from { box-shadow: 0 0 8px 0 #60a5fa44, 0 0 0 #fff0; }
+  to   { box-shadow: 0 0 24px 4px #a78bfa88, 0 0 0 #fff0; }
+}
+
+/* Hiệu ứng sóng cho participant count */
+#participant-count {
+  animation: wave 1.5s infinite linear alternate, glow 2s infinite alternate;
+}
+@keyframes wave {
+  0%   { transform: scale(1) rotate(-2deg); }
+  50%  { transform: scale(1.12) rotate(2deg); }
+  100% { transform: scale(1) rotate(-2deg); }
+}
+
+/* Chat box hiệu ứng shadow */
+#chat-messages {
+  box-shadow: 0 2px 16px 0 #6366f140;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #312e81cc 0%, #1e293bcc 100%);
+  transition: box-shadow 0.2s;
+}
+#chat-messages:hover {
+  box-shadow: 0 4px 32px 0 #818cf880;
+}
+
+/* Video hiệu ứng border khi hover */
+.video-stream {
+  transition: box-shadow 0.2s, border 0.2s;
+  border-radius: 1rem;
+  border: 2px solid #6366f1;
+}
+.video-stream:hover {
+  box-shadow: 0 0 32px 0 #60a5fa99;
+  border-color: #38bdf8;
+}
+
+/* Chat message animation */
+@keyframes chat-in {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
