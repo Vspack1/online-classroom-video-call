@@ -141,6 +141,14 @@
     </div>
   </div>
 
+  <!-- Room Info + Copy Room ID -->
+  <div class="fixed top-20 left-1/2 z-50 -translate-x-1/2 bg-white shadow-lg rounded-lg px-6 py-3 flex items-center space-x-4 border border-blue-200">
+    <span class="font-semibold text-gray-700">Room ID:</span>
+    <span id="room-id-display-ui" class="font-mono text-blue-600 text-lg select-all"></span>
+    <button id="copy-room-id-btn" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm">Copy</button>
+    <span id="copy-room-id-status" class="text-green-600 text-xs ml-2 hidden">Copied!</span>
+  </div>
+
   <!-- Scripts -->
   <script src="/socket.io/socket.io.js"></script>
   <script src="js/app.js"></script>
@@ -157,10 +165,23 @@
         return;
       }
 
-      // Display room ID
+      // Hiển thị Room ID ở UI
       const roomIdDisplay = document.getElementById('room-id-display');
-      if (roomIdDisplay) {
-        roomIdDisplay.textContent = roomId;
+      const roomIdDisplayUI = document.getElementById('room-id-display-ui');
+      if (roomIdDisplay) roomIdDisplay.textContent = roomId;
+      if (roomIdDisplayUI) roomIdDisplayUI.textContent = roomId;
+
+      // Copy Room ID
+      const copyBtn = document.getElementById('copy-room-id-btn');
+      const copyStatus = document.getElementById('copy-room-id-status');
+      if (copyBtn && roomIdDisplayUI) {
+        copyBtn.onclick = () => {
+          navigator.clipboard.writeText(roomIdDisplayUI.textContent);
+          if (copyStatus) {
+            copyStatus.classList.remove('hidden');
+            setTimeout(() => copyStatus.classList.add('hidden'), 1500);
+          }
+        };
       }
 
       // Tab switching
@@ -200,6 +221,12 @@
           const loadingOverlay = document.getElementById('loading-overlay');
           if (loadingOverlay) {
             loadingOverlay.style.display = 'none';
+          }
+          // Focus chat input khi vào phòng
+          const chatInput = document.getElementById('chat-input');
+          if (chatInput) {
+            chatInput.removeAttribute('disabled');
+            chatInput.focus();
           }
         } else {
           // Retry after 500ms if VideoApp is not ready
