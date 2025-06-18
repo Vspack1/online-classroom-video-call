@@ -9,7 +9,7 @@
 </head>
 <body class="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-gray-900 text-white flex flex-col">
   <!-- Header -->
-  <header class="flex items-center justify-between px-6 py-4 text-white bg-gray-800">
+  <header class="flex items-center justify-between px-6 py-4 text-white bg-gray-900/90">
     <div class="flex items-center space-x-4">
       <a href="/" class="text-gray-300 transition-colors hover:text-white">
         <i class="mr-2 fas fa-arrow-left"></i>
@@ -36,16 +36,16 @@
 
   <!-- Main Content -->
   <div class="flex flex-1">
-    <!-- Video Area -->
-    <div class="w-1/3 flex flex-col bg-white/10 rounded-lg shadow-lg m-4 p-4">
+    <!-- Chat/Sidebar Area -->
+    <div class="w-1/3 flex flex-col bg-gray-900/80 rounded-lg shadow-lg m-4 p-4">
       <div class="flex items-center justify-between mb-4">
-        <div class="text-lg font-bold">Room: <span id="room-info" class="bg-blue-700 px-2 py-1 rounded">...</span></div>
-        <div class="text-lg font-semibold">👥 <span id="participant-count" class="bg-purple-700 px-2 py-1 rounded">1</span></div>
+        <div class="text-lg font-bold">Room: <span class="bg-blue-700 px-2 py-1 rounded" id="room-id-display-sidebar">...</span></div>
+        <div class="text-lg font-semibold">👥 <span class="bg-purple-700 px-2 py-1 rounded" id="participant-count-sidebar">1</span></div>
       </div>
       <!-- Chat box ... -->
       <div class="flex-1 overflow-y-auto mb-4" id="chat-messages"></div>
       <div class="chat-input-container">
-        <input type="text" id="chat-input" placeholder="Type a message..." class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:border-blue-400 focus:bg-white/20" maxlength="500">
+        <input type="text" id="chat-input" placeholder="Type a message..." class="w-full px-3 py-2 bg-gray-800 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:border-blue-400 focus:bg-gray-700" maxlength="500">
         <button onclick="sendMessage()" class="ml-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">Send</button>
       </div>
     </div>

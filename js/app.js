@@ -118,11 +118,7 @@ function handleUserJoined(data) {
   showNotification(`${data.username} joined the room`, 'info');
   
   // Update participant count
-  const participantCount = document.getElementById('participant-count');
-  if (participantCount) {
-    const currentCount = parseInt(participantCount.textContent) || 1;
-    participantCount.textContent = (currentCount + 1).toString();
-  }
+  updateParticipantCount(parseInt(participantCount.textContent) + 1);
   
   updateParticipantsList();
 }
@@ -133,11 +129,7 @@ function handleUserLeft(data) {
   showNotification(`${data.username} left the room`, 'info');
   
   // Update participant count
-  const participantCount = document.getElementById('participant-count');
-  if (participantCount) {
-    const currentCount = parseInt(participantCount.textContent) || 1;
-    participantCount.textContent = Math.max(1, currentCount - 1).toString();
-  }
+  updateParticipantCount(parseInt(participantCount.textContent) - 1);
   
   // Remove video stream
   if (remoteStreams[data.userId]) {
@@ -158,10 +150,7 @@ function handleRoomInfo(data) {
   console.log('Room info received:', data);
   
   // Update participant count based on actual participants
-  const participantCount = document.getElementById('participant-count');
-  if (participantCount && data.participants) {
-    participantCount.textContent = data.participants.length.toString();
-  }
+  updateParticipantCount(data.participants.length);
   
   // Add existing participants
   data.participants.forEach(participant => {
@@ -575,4 +564,12 @@ function handleParticipantCountUpdated(data) {
   if (participantCount) {
     participantCount.textContent = data.count.toString();
   }
+}
+
+// Update participant count everywhere
+function updateParticipantCount(count) {
+  const headerCount = document.getElementById('participant-count');
+  const sidebarCount = document.getElementById('participant-count-sidebar');
+  if (headerCount) headerCount.textContent = count.toString();
+  if (sidebarCount) sidebarCount.textContent = count.toString();
 } 
