@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Classroom - Room</title>
+  <link href="output.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="h-screen overflow-hidden bg-gray-900">
+  <!-- Header -->
+  <header class="flex items-center justify-between px-6 py-4 text-white bg-gray-800">
+    <div class="flex items-center space-x-4">
+      <a href="/" class="text-gray-300 transition-colors hover:text-white">
+        <i class="mr-2 fas fa-arrow-left"></i>
+        Back to Home
+      </a>
+      <div class="w-px h-6 bg-gray-600"></div>
+      <div id="room-info" class="text-sm">
+        <span class="text-gray-400">Room:</span>
+        <span id="room-id-display" class="ml-2 font-mono"></span>
+      </div>
+    </div>
+    
+    <div class="flex items-center space-x-4">
+      <div class="text-sm text-gray-400">
+        <i class="mr-1 fas fa-users"></i>
+        <span id="participant-count">1</span> participants
+      </div>
+      <div class="text-sm text-gray-400">
+        <i class="mr-1 fas fa-clock"></i>
+        <span id="call-duration">00:00</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="flex h-full">
+    <!-- Video Area -->
+    <div class="flex flex-col flex-1">
+      <!-- Video Grid -->
+      <div class="relative flex-1">
+        <div id="video-grid" class="grid h-full grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <!-- Videos will be dynamically added here -->
+        </div>
+        
+        <!-- No participants message -->
+        <div id="no-participants" class="absolute inset-0 flex items-center justify-center text-gray-400">
+          <div class="text-center">
+            <i class="mb-4 text-6xl fas fa-users"></i>
+            <p class="text-xl">Waiting for others to join...</p>
+            <p class="mt-2 text-sm">Share the room ID with others to invite them</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="px-6 py-4 bg-gray-800">
+        <div class="flex items-center justify-center space-x-4">
+          <!-- Mute Button -->
+          <button id="mute-button" class="text-white bg-gray-700 control-btn hover:bg-gray-600">
+            <i class="fas fa-microphone"></i>
+          </button>
+
+          <!-- Video Button -->
+          <button id="video-button" class="text-white bg-gray-700 control-btn hover:bg-gray-600">
+            <i class="fas fa-video"></i>
+          </button>
+
+          <!-- Screen Share Button -->
+          <button id="screen-share-button" class="text-white bg-gray-700 control-btn hover:bg-gray-600">
+            <i class="fas fa-desktop"></i>
+          </button>
+
+          <!-- Divider -->
+          <div class="w-px h-8 bg-gray-600"></div>
+
+          <!-- Leave Button -->
+          <button id="leave-button" class="text-white bg-red-600 control-btn hover:bg-red-700">
+            <i class="fas fa-phone-slash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="flex flex-col bg-gray-800 border-l border-gray-700 w-80">
+      <!-- Tabs -->
+      <div class="flex border-b border-gray-700">
+        <button id="chat-tab" class="flex-1 px-4 py-3 text-white bg-gray-700 border-b-2 border-blue-500">
+          <i class="mr-2 fas fa-comments"></i>
+          Chat
+        </button>
+        <button id="participants-tab" class="flex-1 px-4 py-3 text-gray-400 hover:text-white hover:bg-gray-700">
+          <i class="mr-2 fas fa-users"></i>
+          Participants
+        </button>
+      </div>
+
+      <!-- Chat Panel -->
+      <div id="chat-panel" class="flex flex-col flex-1">
+        <!-- Chat Messages -->
+        <div id="chat-messages" class="flex-1 p-4 space-y-3 overflow-y-auto">
+          <!-- Messages will be dynamically added here -->
+        </div>
+
+        <!-- Chat Input -->
+        <div class="p-4 border-t border-gray-700">
+          <div class="flex space-x-2">
+            <input 
+              type="text" 
+              id="chat-input" 
+              class="flex-1 px-3 py-2 text-white bg-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              placeholder="Type a message..."
+            >
+            <button id="send-button" class="px-4 py-2 text-white transition-colors bg-blue-600 rounded-lg hover:bg-blue-700">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Participants Panel -->
+      <div id="participants-panel" class="flex-1 hidden">
+        <!-- Participants List -->
+        <div id="participants-list" class="flex-1 p-4 overflow-y-auto">
+          <!-- Participants will be dynamically added here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Container -->
+  <div id="notification-container" class="fixed z-50 top-4 right-4"></div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="p-8 text-center bg-white rounded-lg">
+      <div class="w-12 h-12 mx-auto mb-4 border-b-2 border-blue-600 rounded-full animate-spin"></div>
+      <p class="text-gray-700">Connecting to room...</p>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Room initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomId = urlParams.get('roomId');
+      const isHost = urlParams.get('host') === 'true';
+      const username = sessionStorage.getItem('username');
+
+      if (!roomId || !username) {
+        window.location.href = '/';
+        return;
+      }
+
+      // Display room ID
+      const roomIdDisplay = document.getElementById('room-id-display');
+      if (roomIdDisplay) {
+        roomIdDisplay.textContent = roomId;
+      }
+
+      // Tab switching
+      const chatTab = document.getElementById('chat-tab');
+      const participantsTab = document.getElementById('participants-tab');
+      const chatPanel = document.getElementById('chat-panel');
+      const participantsPanel = document.getElementById('participants-panel');
+
+      if (chatTab && participantsTab && chatPanel && participantsPanel) {
+        chatTab.addEventListener('click', () => {
+          chatTab.classList.add('bg-gray-700', 'border-blue-500');
+          chatTab.classList.remove('text-gray-400');
+          chatTab.classList.add('text-white');
+          participantsTab.classList.remove('bg-gray-700', 'border-blue-500', 'text-white');
+          participantsTab.classList.add('text-gray-400');
+          chatPanel.classList.remove('hidden');
+          participantsPanel.classList.add('hidden');
+          participantsPanel.classList.remove('flex', 'flex-col');
+        });
+
+        participantsTab.addEventListener('click', () => {
+          participantsTab.classList.add('bg-gray-700', 'border-blue-500');
+          participantsTab.classList.remove('text-gray-400');
+          participantsTab.classList.add('text-white');
+          chatTab.classList.remove('bg-gray-700', 'border-blue-500', 'text-white');
+          chatTab.classList.add('text-gray-400');
+          participantsPanel.classList.remove('hidden');
+          participantsPanel.classList.add('flex', 'flex-col');
+          chatPanel.classList.add('hidden');
+        });
+      }
+
+      // Join room after app initialization
+      const joinRoomWithRetry = () => {
+        if (window.VideoApp && window.VideoApp.joinRoom) {
+          window.VideoApp.joinRoom(roomId, username, isHost);
+          const loadingOverlay = document.getElementById('loading-overlay');
+          if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+          }
+        } else {
+          // Retry after 500ms if VideoApp is not ready
+          setTimeout(joinRoomWithRetry, 500);
+        }
+      };
+
+      // Start trying to join room after a short delay
+      setTimeout(joinRoomWithRetry, 1000);
+
+      // Call duration timer
+      let startTime = Date.now();
+      const durationInterval = setInterval(() => {
+        const durationElement = document.getElementById('call-duration');
+        if (durationElement) {
+          const duration = Math.floor((Date.now() - startTime) / 1000);
+          const minutes = Math.floor(duration / 60);
+          const seconds = duration % 60;
+          durationElement.textContent = 
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+      }, 1000);
+
+      // Cleanup interval when page unloads
+      window.addEventListener('beforeunload', () => {
+        clearInterval(durationInterval);
+      });
+    });
+  </script>
+
+  <style>
+    .control-btn {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 200ms;
+    }
+    
+    .local-video {
+      border-width: 2px;
+      border-color: rgb(59 130 246);
+    }
+    
+    .message {
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+    }
+    
+    .own-message {
+      background-color: rgb(37 99 235);
+      color: white;
+      margin-left: 2rem;
+    }
+    
+    .other-message {
+      background-color: rgb(55 65 81);
+      color: white;
+      margin-right: 2rem;
+    }
+    
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.25rem;
+      font-size: 0.75rem;
+      opacity: 0.75;
+    }
+    
+    .message-content {
+      font-size: 0.875rem;
+    }
+    
+    .notification {
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
+    
+    .notification-info {
+      background-color: rgb(37 99 235);
+    }
+    
+    .notification-success {
+      background-color: rgb(22 163 74);
+    }
+    
+    .notification-error {
+      background-color: rgb(220 38 38);
+    }
+    
+    .notification-warning {
+      background-color: rgb(202 138 4);
+    }
+    
+    #video-grid video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0.5rem;
+    }
+    
+    /* Responsive video grid */
+    @media (max-width: 768px) {
+      #video-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (min-width: 769px) and (max-width: 1024px) {
+      #video-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (min-width: 1025px) and (max-width: 1440px) {
+      #video-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (min-width: 1441px) {
+      #video-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background-color: rgb(55 65 81);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background-color: rgb(107 114 128);
+      border-radius: 0.25rem;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: rgb(156 163 175);
+    }
+  </style>
+</body>
+</html> 
