@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng nhập</title>
+  <link href="output.css" rel="stylesheet">
+</head>
+<body class="flex items-center justify-center h-screen bg-gray-100">
+  <form id="loginForm" class="bg-white p-8 rounded shadow-md w-96 flex flex-col gap-4">
+    <h2 class="text-2xl font-bold mb-4 text-center">Đăng nhập</h2>
+    <input type="email" id="email" placeholder="Email" required class="border p-2 rounded">
+    <input type="password" id="password" placeholder="Mật khẩu" required class="border p-2 rounded">
+    <label class="block">
+      <span class="text-gray-700">Ảnh đại diện</span>
+      <input type="file" id="avatar" accept="image/*" class="mt-1 block w-full">
+    </label>
+    <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Đăng nhập</button>
+    <button type="button" id="googleLogin" class="bg-red-500 text-white p-2 rounded hover:bg-red-600">Đăng nhập với Google</button>
+  </form>
+  <script>
+    const GOOGLE_CLIENT_ID = '682122449552-8819cjt8bhc9v942o7ukdeu0maaq90kp.apps.googleusercontent.com';
+    const REDIRECT_URI = 'http://localhost:3000/online-classroom/login.html';
+  </script>
+  <script src="js/login.js"></script>
+</body>
+</html> 

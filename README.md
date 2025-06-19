@@ -1,3 +1,44 @@
+# Online Classroom - Đăng nhập Email/Google OAuth
+
+## Chức năng
+- Đăng nhập bằng email, mật khẩu, ảnh đại diện (avatar)
+- Đăng nhập bằng Google OAuth (lấy avatar và email từ Google)
+
+## Cài đặt & Chạy thử
+1. **Cài đặt dependencies:**
+   ```bash
+   npm install
+   ```
+2. **Chạy server:**
+   ```bash
+   node server.js
+   ```
+3. **Truy cập:**
+   - Mở trình duyệt: `http://localhost:3000/online-classroom/login.html`
+
+## Cấu hình Google OAuth
+- Đã cấu hình sẵn:
+  - `client_id`: 682122449552-8819cjt8bhc9v942o7ukdeu0maaq90kp.apps.googleusercontent.com
+  - `redirect_uri`: http://localhost:3000/online-classroom/login.html
+- Nếu muốn đổi, sửa trong file `login.html` và `js/login.js`.
+
+## Cấu trúc file chính
+- `login.html`: Trang đăng nhập
+- `js/login.js`: Xử lý đăng nhập email/avatar và Google OAuth
+- `home.html`: Trang chính sau khi đăng nhập
+- `js/home.js`: Hiển thị avatar, email
+
+## Đăng nhập Google OAuth
+- Nhấn nút "Đăng nhập với Google"
+- Đăng nhập Google, cấp quyền, sẽ tự động chuyển về trang chủ với avatar và email
+
+## Đăng nhập cơ bản
+- Nhập email, mật khẩu, chọn ảnh đại diện (tùy chọn)
+- Nhấn "Đăng nhập" để vào trang chủ
+
+---
+Nếu gặp lỗi, kiểm tra lại client_id, redirect_uri hoặc liên hệ tác giả.
+
 # Online Classroom - Video Learning Platform
 
 Một ứng dụng web học tập trực tuyến hoàn chỉnh với các tính năng tương tự Zoom/Google Meet, được xây dựng bằng HTML, CSS (Tailwind), JavaScript và Node.js.

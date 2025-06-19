@@ -185,4 +185,16 @@ window.HomeApp = {
   generateRoomId,
   copyRoomId,
   backToHome
+};
+
+window.onload = function() {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (user) {
+    if (user.avatarUrl) {
+      document.getElementById('avatarImg').src = user.avatarUrl;
+    }
+    document.getElementById('userEmail').textContent = user.email;
+  } else {
+    window.location.href = 'login.html';
+  }
 }; 
