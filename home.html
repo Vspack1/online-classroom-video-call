@@ -1,16 +1,19 @@
+<!--
+  Trang chủ: Hiển thị thông tin người dùng sau khi đăng nhập (avatar và email), có nút đăng xuất.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Trang chủ</title>
-  <link href="output.css" rel="stylesheet">
+  <link href="output.css" rel="stylesheet"> <!-- Kết nối CSS -->
 </head>
 <body class="flex flex-col items-center justify-center h-screen bg-gray-100">
   <div class="bg-white p-8 rounded shadow-md flex flex-col items-center gap-4">
-    <img id="avatarImg" class="w-24 h-24 rounded-full border" src="default-avatar.png" alt="Avatar">
-    <span id="userEmail" class="text-lg font-semibold"></span>
-    <a href="login.html" class="mt-4 text-blue-500 hover:underline">Đăng xuất</a>
+    <img id="avatarImg" class="w-24 h-24 rounded-full border" src="default-avatar.png" alt="Avatar"> <!-- Hiển thị avatar -->
+    <span id="userEmail" class="text-lg font-semibold"></span> <!-- Hiển thị email -->
+    <a href="login.html" class="mt-4 text-blue-500 hover:underline">Đăng xuất</a> <!-- Link đăng xuất -->
   </div>
-  <script src="js/home.js"></script>
+  <script src="js/home.js"></script> <!-- Kết nối file JS để hiển thị thông tin user -->
 </body>
 </html> 

@@ -1,26 +1,57 @@
+<!--
+  Trang đăng nhập: Cho phép người dùng đăng nhập bằng email/mật khẩu hoặc Google, có thể chọn ảnh đại diện.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Đăng nhập</title>
-  <link href="output.css" rel="stylesheet">
+  <link href="output.css" rel="stylesheet"> <!-- Kết nối file CSS để làm đẹp giao diện -->
 </head>
-<body class="flex items-center justify-center h-screen bg-gray-100">
-  <form id="loginForm" class="bg-white p-8 rounded shadow-md w-96 flex flex-col gap-4">
-    <h2 class="text-2xl font-bold mb-4 text-center">Đăng nhập</h2>
-    <input type="email" id="email" placeholder="Email" required class="border p-2 rounded">
-    <input type="password" id="password" placeholder="Mật khẩu" required class="border p-2 rounded">
-    <label class="block">
-      <span class="text-gray-700">Ảnh đại diện</span>
-      <input type="file" id="avatar" accept="image/*" class="mt-1 block w-full">
-    </label>
-    <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Đăng nhập</button>
-    <button type="button" id="googleLogin" class="bg-red-500 text-white p-2 rounded hover:bg-red-600">Đăng nhập với Google</button>
-  </form>
+<body class="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-100 to-purple-200">
+  <!-- Container chính -->
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 flex flex-col gap-6 mt-8">
+    <!-- Tiêu đề -->
+    <h2 class="text-3xl font-extrabold text-center text-blue-700 mb-2">Đăng nhập vào lớp học</h2>
+    <p class="text-center text-gray-500 mb-4">Chào mừng bạn quay lại! Hãy đăng nhập để tiếp tục.</p>
+    <!-- Form đăng nhập -->
+    <form id="loginForm" class="flex flex-col gap-4">
+      <label class="flex flex-col gap-1">
+        <span class="font-semibold">Email</span>
+        <input type="email" id="email" placeholder="Nhập email..." required class="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+      </label>
+      <label class="flex flex-col gap-1">
+        <span class="font-semibold">Mật khẩu</span>
+        <input type="password" id="password" placeholder="Nhập mật khẩu..." required class="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+      </label>
+      <label class="flex flex-col gap-1">
+        <span class="font-semibold">Ảnh đại diện</span>
+        <input type="file" id="avatar" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+      </label>
+      <button type="submit" class="bg-blue-600 text-white font-bold py-2 rounded-lg hover:bg-blue-700 transition">Đăng nhập</button>
+      <div class="flex items-center gap-2 my-2">
+        <div class="flex-1 h-px bg-gray-300"></div>
+        <span class="text-gray-400 text-xs">hoặc</span>
+        <div class="flex-1 h-px bg-gray-300"></div>
+      </div>
+      <button type="button" id="googleLogin" class="flex items-center justify-center gap-2 bg-red-500 text-white font-bold py-2 rounded-lg hover:bg-red-600 transition">
+        <svg class="w-5 h-5" viewBox="0 0 48 48"><g><path fill="#FFC107" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.6 4.3-5.7 7-10.3 7-6.1 0-11-4.9-11-11s4.9-11 11-11c2.6 0 5 .9 6.9 2.6l6.6-6.6C36.1 6.5 30.4 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 19.7-8 19.7-20 0-1.3-.1-2.2-.3-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C15.1 16.1 19.2 13 24 13c2.6 0 5 .9 6.9 2.6l6.6-6.6C36.1 6.5 30.4 4 24 4c-7.2 0-13.4 3.1-17.7 8.1z"/><path fill="#4CAF50" d="M24 44c5.4 0 10.3-1.8 14.1-4.9l-6.5-5.3C29.1 35.7 26.7 36.5 24 36.5c-4.6 0-8.7-2.7-10.3-7H6.3C8.6 39.2 15.7 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5h-1.9V20H24v8h11.3c-1.1 3-3.6 5.2-6.3 6.2l6.5 5.3C40.7 36.2 44 30.7 44 24c0-1.3-.1-2.2-.4-3.5z"/></g></svg>
+        Đăng nhập với Google
+      </button>
+    </form>
+  </div>
+  <!-- Footer đẹp, hiện đại -->
+  <footer class="mt-8 text-center text-gray-500 text-sm select-none">
+    &copy; 2025 Online Classroom. Built with <span class="text-red-500">❤️</span> for better learning.
+  </footer>
+  <!-- Định nghĩa biến client_id và redirect_uri cho Google OAuth -->
   <script>
-    const GOOGLE_CLIENT_ID = '682122449552-8819cjt8bhc9v942o7ukdeu0maaq90kp.apps.googleusercontent.com';
-    const REDIRECT_URI = 'http://localhost:3000/online-classroom/login.html';
+    const GOOGLE_CLIENT_ID = '682122449552-8819cjt8bhc9v942o7ukdeu0maaq90kp.apps.googleusercontent.com'; // Mã ứng dụng Google
+    const REDIRECT_URI = 'http://localhost:3000/online-classroom/login.html'; // Đường dẫn trả về sau khi đăng nhập Google
   </script>
-  <script src="js/login.js"></script>
+  <script src="js/login.js"></script> <!-- Kết nối file xử lý logic đăng nhập -->
 </body>
-</html> 
+</html>
+<!--
+  Giao diện đã được làm đẹp lại với Tailwind CSS, có chú thích cho từng phần.
+--> 
